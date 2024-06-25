@@ -33,13 +33,10 @@ runs:
       run: npm install -g clever-tools
     - name: Create app
       shell: bash
-      run: clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --organization ${{ inputs.organization }}
-    -name: Set up domain
-      shell: bash
-      run: clever domain add ${{ inputs.domain }}
-    - name: Deploy
-      shell: bash
-      run: clever deploy
+      run: |
+        clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --organization ${{ inputs.organization }}
+        clever domain add ${{ inputs.domain }}
+        clever deploy
     - name: Comment PR
         uses: actions/github-script@v7
         with:
