@@ -4,7 +4,7 @@ description: 'Deploy a review app on Clever Cloud when a PR is opened'
 inputs:
   type:  
     description: 'Which type of app to create'
-    required: true
+    required: false
   name:
     description: 'The name of your app'
     required: true
