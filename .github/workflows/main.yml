@@ -5,9 +5,13 @@ on:
 
 jobs:
   deploy:
+    name: Deploy on opening or reopening a PR
     if: github.event.action == 'opened' || github.event.action == 'reopened'
     runs-on: ubuntu-latest
-    name: Deploy on opening or reopening a PR
+    permissions:
+        issues: write
+        pull-requests: write
+        contents: read
     steps:
       - uses: actions/checkout@v4
         with:
