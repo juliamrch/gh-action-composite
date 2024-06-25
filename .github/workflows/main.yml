@@ -41,14 +41,6 @@ jobs:
               issue_number: issue_number,
               body: message
               });
-              deploy:
-                name: Deploy on opening or reopening a PR
-                if: github.event.action == 'opened' || github.event.action == 'reopened'
-                runs-on: ubuntu-latest
-                permissions:
-                    issues: write
-                    pull-requests: write
-                    contents: read
 
   update:
     name: Update review app
