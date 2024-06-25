@@ -33,10 +33,6 @@ runs:
       run: npm install -g clever-tools
     - name: Create app
       shell: bash
-      env:
-        CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
-        CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
-        ORGA_ID: ${{ secrets.ORGA_ID }}
       run: clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --organization ${{ inputs.organization }}
     -name: Set up domain
       shell: bash
