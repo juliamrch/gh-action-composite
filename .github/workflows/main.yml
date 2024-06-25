@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy on opening or reopening a PR
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Review app on PR
-        uses: juliamrch/gh-action-composite@v5
+        uses: juliamrch/gh-action-composite@v6
         env:
           CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
           CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
