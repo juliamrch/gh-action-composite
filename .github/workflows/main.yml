@@ -9,6 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy on opening or reopening a PR
     steps:
-      - uses: juliamrch/gh-action-composite@v2
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - name: Review app on PR
+        uses: juliamrch/gh-action-composite@v3
         with:
           type: 'apache-static'
