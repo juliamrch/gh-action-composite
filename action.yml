@@ -4,7 +4,7 @@ description: 'Deploy a review app on Clever Cloud when a PR is opened'
 inputs:
   type:  
     description: 'Which type of app to create'
-    required: false
+    required: true
   name:
     description: 'The name of your app'
     required: true
@@ -34,6 +34,15 @@ runs:
     - name: Create app
       shell: bash
       run: |
-        clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --org ${{ inputs.organization }}
-        clever domain add ${{ inputs.domain }}
-        clever deploy
+        if [[ ${{ github.event.action }} == 'opened' || ${{ github.event.action }} == 'reopened' ]]; then
+          clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --org ${{ inputs.organization }}
+          clever domain add ${{ inputs.domain }}
+          clever deploy
+        fi
+        elif [[ ${{ github.event.action }} == 'synchronize' ]]; then
+          clever link -o "$ORGA_ID" ${{ inputs.name }}
+          clever deploy --force
+        fi
+        elif [[ ${{ github.event.action }} == 'closed' ]]; then
+          clever delete --alias ${{ inputs.alias }}
+        fi
