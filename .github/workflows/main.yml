@@ -16,6 +16,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Review app on PR
-        uses: juliamrch/gh-action-composite@v3
+        uses: juliamrch/gh-action-composite@v4
         with:
           type: 'apache-static'
