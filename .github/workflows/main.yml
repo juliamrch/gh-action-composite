@@ -1,16 +1,14 @@
-on: [push]
+on:
+  pull_request_target:
+    types: [opened, closed, synchronize, reopened]
+    branches: [ main ]
 
 jobs:
-  hello_world_job:
+  deploy:
+    if: github.event.action == 'opened' || github.event.action == 'reopened'
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: Deploy on opening or reopening a PR
     steps:
-      - uses: actions/checkout@v4
-      - id: foo
-        uses: juliamrch/gh-action-composite@v1
+      - uses: juliamrch/gh-action-composite@v2
         with:
-          who-to-greet: 'Julia'
-      - run: echo random-number "$RANDOM_NUMBER"
-        shell: bash
-        env:
-          RANDOM_NUMBER: ${{ steps.foo.outputs.random-number }}
+          type: 'apache-static'

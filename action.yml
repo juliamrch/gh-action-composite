@@ -1,35 +1,64 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: 'Clever Cloud review app on PRs'
+description: 'Deploy a review app on Clever Cloud when a PR is opened'
+
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  type:  
+    description: 'Which type of app to create'
     required: true
-    default: 'World'
-outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-number }}
+  name:
+    description: 'The name of your app'
+    required: true
+    default: ${{ github.event.pull_request.base.repo.name }}-PR-${{ github.event.number }}
+  alias:
+    description: 'The alias of your app'
+    required: true
+    default: ${{ github.event.pull_request.base.repo.name }}-PR-${{ github.event.number }}
+  region:
+    description: 'The region to deploy on'
+    required: true
+    default: 'par'
+  organization:
+    description: 'The organization to deploy on'
+    required: true
+    default: $ORGA_ID
+  domain:
+    description: 'The domain to use for the app'
+    required: false
+    default: ${{ github.event.pull_request.base.repo.name }}-PR-${{ github.event.number }}.cleverapps.io
 runs:
   using: "composite"
   steps:
-    - name: Set Greeting
-      run: echo "Hello $INPUT_WHO_TO_GREET."
-      shell: bash
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+    - name: Install clever-tools
+      run: npm install -g clever-tools
+    - name: Create app
       env:
-        INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
-
-    - name: Random Number Generator
-      id: random-number-generator
-      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
-      shell: bash
-
-    - name: Set GitHub Path
-      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
-      shell: bash
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-
-    - name: Run goodbye.sh
-      run: goodbye.sh
-      shell: bash
-
+        env:
+          CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
+          CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+          ORGA_ID: ${{ secrets.ORGA_ID }}
+      run: clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --organization ${{ inputs.organization }}
+    -name: Set up domain
+      run: clever domain add ${{ inputs.domain }}
+    - name: Deploy
+      run: clever deploy
+    - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = context.payload.pull_request.number;
+            const message = `Deployment has finished 👁️👄👁️ Your app is available [here](https://${{ github.event.pull_request.base.repo.name }}-PR-${{ github.event.number }}.cleverapps.io)`;
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              body: message
+            });
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
