@@ -34,6 +34,6 @@ runs:
     - name: Create app
       shell: bash
       run: |
-        clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --organization ${{ inputs.organization }}
+        clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --org ${{ inputs.organization }}
         clever domain add ${{ inputs.domain }}
         clever deploy
