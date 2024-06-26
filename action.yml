@@ -55,6 +55,7 @@ runs:
           clever link -o "$ORGA_ID" ${{ inputs.name }}
           clever deploy --force
         elif [ "${{ github.event.action }}" = 'closed' ]; then
+          clever link -o "$ORGA_ID" ${{ inputs.name }}
           clever delete --alias ${{ inputs.alias }}
         fi
       shell: bash
