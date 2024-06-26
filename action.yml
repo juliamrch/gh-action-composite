@@ -41,15 +41,16 @@ runs:
         if [ "${{ github.event.action }}" = 'opened' ] || [ "${{ github.event.action }}" = 'reopened' ]; then
           clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --org ${{ inputs.organization }}
           clever domain add ${{ inputs.domain }}
-        if [ "${{ inputs.set-env }}" = 'true' ]; then
-          for var in $(env | cut -f1 -d=)
-          do
-            if [[ "$var" == "CLEVER_SECRET" || "$var" == "CLEVER_TOKEN" || "$var" == "ORGA_ID" ]]; then
-              continue
-            fi
-            clever env set $var "${!var}"
-          done
-          clever deploy
+          if [ "${{ inputs.set-env }}" = 'true' ]; then
+            for var in $(env | cut -f1 -d=)
+            do
+              if [[ "$var" == "CLEVER_SECRET" || "$var" == "CLEVER_TOKEN" || "$var" == "ORGA_ID" ]]; then
+                continue
+              fi
+              clever env set $var "${!var}"
+            done
+            clever deploy
+          fi
         elif [ "${{ github.event.action }}" = 'synchronize' ]; then
           clever link -o "$ORGA_ID" ${{ inputs.name }}
           clever deploy --force
