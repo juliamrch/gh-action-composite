@@ -19,7 +19,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Create review app
-        uses: juliamrch/gh-action-composite@v17
+        uses: juliamrch/gh-action-composite@v18
         env:
           CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
           CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
@@ -28,6 +28,7 @@ jobs:
         with:
           type: 'static-apache'
           set-env: true
+          environment: 'review'
       - name: Comment PR
         uses: actions/github-script@v7
         env:

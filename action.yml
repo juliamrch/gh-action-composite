@@ -30,6 +30,11 @@ inputs:
     type: boolean
     required: false
     default: false
+  environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
+        default: ''
 runs:
   using: "composite"
   steps:
