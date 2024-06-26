@@ -44,7 +44,7 @@ runs:
           if [ "${{ inputs.set-env }}" = 'true' ]; then
             for var in $(secrets | cut -f1 -d=)
             do
-              if [[ "$var" == "CLEVER_SECRET" || "$var" == "CLEVER_TOKEN" || "$var" == "ORGA_ID" || || "$var" == "CI" "$var" == GITHUB_* || "$var" == RUNNER_* ]]; then
+              if [[ "$var" == "CLEVER_SECRET" || "$var" == "CLEVER_TOKEN" || "$var" == "ORGA_ID" || "$var" == "CI" "$var" == GITHUB_* || "$var" == RUNNER_* ]]; then
                 continue
               fi
               clever env set $var "${!var}"
