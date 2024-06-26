@@ -25,6 +25,11 @@ inputs:
     description: 'The domain to use for the app'
     required: false
     default: ${{ github.event.pull_request.base.repo.name }}-PR-${{ github.event.number }}.cleverapps.io
+  set-env:
+    description: 'Set environment variables'
+    type: boolean
+    required: false
+    default: false
 runs:
   using: "composite"
   steps:
@@ -36,6 +41,14 @@ runs:
         if [ "${{ github.event.action }}" = 'opened' ] || [ "${{ github.event.action }}" = 'reopened' ]; then
           clever create --type ${{ inputs.type }} ${{ inputs.name }} --alias ${{ inputs.alias }} --region ${{ inputs.region }} --org ${{ inputs.organization }}
           clever domain add ${{ inputs.domain }}
+        if [ "${{ inputs.set-env }}" = 'true' ]; then
+          for var in $(env | cut -f1 -d=)
+          do
+            if [[ "$var" == "CLEVER_SECRET" || "$var" == "CLEVER_TOKEN" || "$var" == "ORGA_ID" ]]; then
+              continue
+            fi
+            clever env set $var "${!var}"
+          done
           clever deploy
         elif [ "${{ github.event.action }}" = 'synchronize' ]; then
           clever link -o "$ORGA_ID" ${{ inputs.name }}
