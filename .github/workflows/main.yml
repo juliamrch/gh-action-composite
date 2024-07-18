@@ -24,7 +24,7 @@ jobs:
           CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
           CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
           ORGA_ID: ${{ secrets.ORGA_ID }}
-          CC_RUN_SUCCEEDED_HOOK: ${{ secrets.GH_CC_RUN_SUCCEEDED_HOOK }}
+          GH_CC_RUN_SUCCEEDED_HOOK: ${{ secrets.GH_CC_RUN_SUCCEEDED_HOOK }}
         with:
           type: 'static-apache'
           set-env: true
