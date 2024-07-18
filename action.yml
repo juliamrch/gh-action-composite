@@ -52,7 +52,7 @@ runs:
           # Remove prefix from print
             for var in $(env | awk -F= '/^GH_/ { print $1 }')
             do
-              real_var=${app#GH_}
+              real_var=${var#GH_}
               # Inject variable in the app on Clever Cloud
               clever env set $real_var "${!var}"
             done
