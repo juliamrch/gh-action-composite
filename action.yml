@@ -68,5 +68,5 @@ runs:
       run: |
         echo "PR is closed. Executing cleanup steps."
         clever link -o "$ORGA_ID" ${{ inputs.name }}
-        clever delete --alias ${{ inputs.alias }}
+        clever delete --alias ${{ inputs.alias }} --yes
       shell: bash
