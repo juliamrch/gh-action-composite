@@ -31,10 +31,10 @@ inputs:
     required: false
     default: false
   environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: true
-        default: ''
+    description: 'Environment to run tests against'
+    type: environment
+    required: true
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -56,17 +56,14 @@ runs:
               # Inject variable in the app on Clever Cloud
               clever env set $real_var "${!var}"
             done
-
             clever deploy
           fi
         elif [ "${{ github.event.action }}" = 'synchronize' ]; then
           clever link -o "$ORGA_ID" ${{ inputs.name }}
           clever deploy --force
-      shell: bash
-    - name: Cleanup on PR close
-      if: github.event.action == 'closed'
-      run: |
-        echo "PR is closed. Executing cleanup steps."
-        clever link -o "$ORGA_ID" ${{ inputs.name }}
-        clever delete --alias ${{ inputs.alias }} --yes
+        elif [ "${{ github.event.action }}" = 'closed' ]; then
+          echo "PR is closed. Executing cleanup steps."
+          clever link -o "$ORGA_ID" ${{ inputs.name }}
+          clever delete --alias ${{ inputs.alias }}
+        fi
       shell: bash
